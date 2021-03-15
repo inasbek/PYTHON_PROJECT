@@ -1,0 +1,363 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>listiterator &#8212; Module tp-iterateurs 0 documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Module tp-iterateurs 0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for listiterator</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;:mod:`listiterator` module : list implementation with iterator interaction</span>
+
+<span class="sd">Provides constructor, selectors and modifiers for mutable lists.</span>
+<span class="sd">Lists of this module must be traversed via iterators. </span>
+
+<span class="sd">An iterator for lists allows the programmer to traverse the list in</span>
+<span class="sd">either direction and adding elements to the list during iteration.  </span>
+
+<span class="sd">An iterator has no current element; its cursor position always lies</span>
+<span class="sd">between the element that would be returned by a call to :code:`previous` and</span>
+<span class="sd">the element that would be returned by a call to `next`. </span>
+
+<span class="sd">An iterator for a list of length n has n+1 possible cursor positions,</span>
+<span class="sd">as illustrated by the carets (^) below:</span>
+
+<span class="sd">.. code::</span>
+
+<span class="sd">                      Element(0)   Element(1)   Element(2)   ... Element(n-1)</span>
+<span class="sd"> cursor positions:  ^            ^            ^            ^                  ^</span>
+
+<span class="sd">:author: `FIL - IEEA - Univ. Lille1.fr &lt;http://portail.fil.univ-lille1.fr&gt;`_</span>
+
+<span class="sd">:date: 2016, january</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EmptyList"><a class="viewcode-back" href="../listiterator.html#listiterator.EmptyList">[docs]</a><span class="k">class</span> <span class="nc">EmptyList</span> <span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception for empty lists</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">msg</span></div>
+
+<div class="viewcode-block" id="NoSuchElementException"><a class="viewcode-back" href="../listiterator.html#listiterator.NoSuchElementException">[docs]</a><span class="k">class</span> <span class="nc">NoSuchElementException</span> <span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception for iterators not positionned</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">msg</span></div>
+        
+<span class="k">def</span> <span class="nf">__new_cell</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">next_cell</span><span class="p">,</span><span class="n">prev_cell</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s2">&quot;value&quot;</span> <span class="p">:</span> <span class="n">v</span><span class="p">,</span> <span class="s2">&quot;next&quot;</span> <span class="p">:</span> <span class="n">next_cell</span><span class="p">,</span> <span class="s2">&quot;prev&quot;</span> <span class="p">:</span> <span class="n">prev_cell</span> <span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">__empty_cell</span> <span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">c</span> <span class="o">==</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="empty_list"><a class="viewcode-back" href="../listiterator.html#listiterator.empty_list">[docs]</a><span class="k">def</span> <span class="nf">empty_list</span> <span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new empty list.</span>
+
+<span class="sd">    :return: A frest list</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">return</span> <span class="p">{</span> <span class="s2">&quot;head&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;tail&quot;</span> <span class="p">:</span> <span class="kc">None</span> <span class="p">}</span></div>
+
+<div class="viewcode-block" id="is_empty"><a class="viewcode-back" href="../listiterator.html#listiterator.is_empty">[docs]</a><span class="k">def</span> <span class="nf">is_empty</span> <span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns true if the list is empty, false else.</span>
+<span class="sd">    </span>
+<span class="sd">    :param l: The list</span>
+<span class="sd">    :type l: dict</span>
+<span class="sd">    :rtype: boolean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">l</span> <span class="o">==</span> <span class="p">{</span> <span class="s2">&quot;head&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;tail&quot;</span> <span class="p">:</span> <span class="kc">None</span> <span class="p">}</span><span class="c1">#tail est le dernier element</span></div>
+
+<div class="viewcode-block" id="cons"><a class="viewcode-back" href="../listiterator.html#listiterator.cons">[docs]</a><span class="k">def</span> <span class="nf">cons</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add the value :code:`v` at the begining of the list :code:`l`.</span>
+
+<span class="sd">    :param l: The list, possibly empty.</span>
+<span class="sd">    :type l: dict</span>
+<span class="sd">    :param v: The value to be added.</span>
+<span class="sd">    :type v: Any</span>
+
+<span class="sd">    UC: not compatible with iterators</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">l</span><span class="p">[</span><span class="s2">&quot;head&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">l</span><span class="p">[</span><span class="s2">&quot;head&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="s2">&quot;tail&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">__new_cell</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">l</span><span class="p">[</span><span class="s2">&quot;head&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">__new_cell</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="s2">&quot;head&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">l</span><span class="p">[</span><span class="s2">&quot;head&quot;</span><span class="p">][</span><span class="s2">&quot;next&quot;</span><span class="p">][</span><span class="s2">&quot;prev&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="s2">&quot;head&quot;</span><span class="p">]</span></div>
+
+<span class="k">def</span> <span class="nf">__print_without_iterator_forward</span> <span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param c: A cell</span>
+<span class="sd">    :type c: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">__empty_cell</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span><span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">__print_without_iterator_forward</span> <span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">__print_without_iterator_reversed</span> <span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param c: A cell</span>
+<span class="sd">    :type c: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">__empty_cell</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span><span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">__print_without_iterator_reversed</span> <span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;prev&quot;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="print_list"><a class="viewcode-back" href="../listiterator.html#listiterator.print_list">[docs]</a><span class="k">def</span> <span class="nf">print_list</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param l: The list, possibly empty.</span>
+<span class="sd">    :type l: dict</span>
+<span class="sd">    :param reverse: True if the the list *l* must be printed from the end to the begining</span>
+<span class="sd">    :type reverse: boolean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_empty</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">EmptyList</span><span class="p">(</span><span class="s2">&quot;The list has no elements&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
+        <span class="n">__print_without_iterator_reversed</span> <span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="s2">&quot;tail&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">__print_without_iterator_forward</span> <span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="s2">&quot;head&quot;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="get_listiterator"><a class="viewcode-back" href="../listiterator.html#listiterator.get_listiterator">[docs]</a><span class="k">def</span> <span class="nf">get_listiterator</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new iterator for list *l*.</span>
+
+<span class="sd">    :param l: The list</span>
+<span class="sd">    :type l: dict</span>
+<span class="sd">    :return: An iterator at the begining of the list</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">default</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;left&quot;</span><span class="p">:</span><span class="kc">None</span>  <span class="p">,</span><span class="s2">&quot;right&quot;</span><span class="p">:</span><span class="n">l</span><span class="p">[</span><span class="s2">&quot;tail&quot;</span><span class="p">]</span> <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;left&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span><span class="s2">&quot;right&quot;</span><span class="p">:</span><span class="n">l</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="hasNext"><a class="viewcode-back" href="../listiterator.html#listiterator.hasNext">[docs]</a><span class="k">def</span> <span class="nf">hasNext</span> <span class="p">(</span><span class="n">it</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns :code:`True` if this list iterator has more elements when</span>
+<span class="sd">    traversing the list in the forward direction. (In other words,</span>
+<span class="sd">    returns :code:`True` if :code:`next(it)` would return an element rather than</span>
+<span class="sd">    throwing an exception.)</span>
+
+<span class="sd">    :param it: The iterator</span>
+<span class="sd">    :type it: dict</span>
+<span class="sd">    :rtype: boolean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">]</span><span class="o">!=</span><span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="next"><a class="viewcode-back" href="../listiterator.html#listiterator.next">[docs]</a><span class="k">def</span> <span class="nf">next</span> <span class="p">(</span><span class="n">it</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the next element in the list and advances the cursor</span>
+<span class="sd">    position. This method may be called repeatedly to iterate through</span>
+<span class="sd">    the list, or intermixed with calls to :code:`previous(it)` to go back and</span>
+<span class="sd">    forth. (Note that alternating calls to next and previous will</span>
+<span class="sd">    return the same element repeatedly.)</span>
+
+<span class="sd">    Throws NoSuchElementException if theere is no such element.</span>
+
+<span class="sd">    :param it: The iterator</span>
+<span class="sd">    :type it: dict</span>
+<span class="sd">    :rtype: Type of the elements of the list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">hasNext</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s2">&quot;no next found&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="c1">#the cursor</span>
+        <span class="n">c</span><span class="o">=</span><span class="n">__new_cell</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">][</span><span class="s2">&quot;next&quot;</span><span class="p">]</span><span class="o">!=</span><span class="kc">None</span><span class="p">:</span>
+            <span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">][</span><span class="s2">&quot;next&quot;</span><span class="p">][</span><span class="s2">&quot;prev&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">]</span>
+        <span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">][</span><span class="s2">&quot;next&quot;</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">v</span></div>
+
+
+<div class="viewcode-block" id="hasPrevious"><a class="viewcode-back" href="../listiterator.html#listiterator.hasPrevious">[docs]</a><span class="k">def</span> <span class="nf">hasPrevious</span> <span class="p">(</span><span class="n">it</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns :code:`True` if this list iterator has more elements when</span>
+<span class="sd">    traversing the list in the reverse direction. (In other words,</span>
+<span class="sd">    returns :code:`True` if :code:`previous(it)` would return an</span>
+<span class="sd">    element rather than throwing an exception.)</span>
+
+<span class="sd">    :param it: The iterator</span>
+<span class="sd">    :type it: dict</span>
+<span class="sd">    :rtype: boolean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">!=</span><span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="previous"><a class="viewcode-back" href="../listiterator.html#listiterator.previous">[docs]</a><span class="k">def</span> <span class="nf">previous</span> <span class="p">(</span><span class="n">it</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the previous element in the list and moves the cursor</span>
+<span class="sd">    position backwards. This method may be called repeatedly to</span>
+<span class="sd">    iterate through the list backwards, or intermixed with calls to</span>
+<span class="sd">    :code:`next(it)` to go back and forth. (Note that alternating calls to next</span>
+<span class="sd">    and previous will return the same element repeatedly.)</span>
+
+<span class="sd">    Throws NoSuchElementException if there is no such element.</span>
+
+<span class="sd">    :param it: The iterator</span>
+<span class="sd">    :type it: dict</span>
+<span class="sd">    :rtype: Type of the elements of the list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">hasPrevious</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s2">&quot;no prev found&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="c1">#the cursor</span>
+        <span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">][</span><span class="s2">&quot;prev&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hasNext</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">][</span><span class="s2">&quot;prev&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">v</span> </div>
+
+
+<div class="viewcode-block" id="add"><a class="viewcode-back" href="../listiterator.html#listiterator.add">[docs]</a><span class="k">def</span> <span class="nf">add</span> <span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inserts the specified element into the list. The element is</span>
+<span class="sd">    inserted immediately before the element that would be returned by</span>
+<span class="sd">    next(), if any, and after the element that would be returned by</span>
+<span class="sd">    previous(), if any. (If the list contains no elements, the new</span>
+<span class="sd">    element becomes the sole element on the list.) The new element is</span>
+<span class="sd">    inserted before the implicit cursor: a subsequent call to next</span>
+<span class="sd">    would be unaffected, and a subsequent call to previous would</span>
+<span class="sd">    return the new element.</span>
+
+<span class="sd">    :param it: The iterator</span>
+<span class="sd">    :type it: dict</span>
+<span class="sd">    :param v: The element</span>
+<span class="sd">    :type v: Any</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span><span class="o">=</span><span class="n">__new_cell</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="c1">#si liste vide</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">hasNext</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>        
+        <span class="n">c</span><span class="p">[</span><span class="s2">&quot;prev&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span>
+        <span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">c</span>
+        <span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s2">&quot;tail&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">c</span>
+        
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">hasPrevious</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
+        <span class="n">c</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s2">&quot;head&quot;</span><span class="p">]</span>
+        <span class="c1">#it[&quot;right&quot;][&quot;head&quot;]=c</span>
+        <span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">c</span>
+        
+        <span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s2">&quot;head&quot;</span><span class="p">][</span><span class="s2">&quot;prev&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">c</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">c</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">]</span>
+        <span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">][</span><span class="s2">&quot;prev&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">c</span>    
+        <span class="n">it</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">c</span>
+        <span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">][</span><span class="s2">&quot;next&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">c</span>
+        <span class="n">c</span><span class="p">[</span><span class="s2">&quot;prev&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span>
+        <span class="n">it</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">c</span></div>
+            
+
+<div class="viewcode-block" id="remove"><a class="viewcode-back" href="../listiterator.html#listiterator.remove">[docs]</a><span class="k">def</span> <span class="nf">remove</span> <span class="p">(</span><span class="n">it</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Removes from the list the last element that was returned by</span>
+<span class="sd">    next(). This call can only be made once per call to next.</span>
+
+<span class="sd">    :param it: The iterator</span>
+<span class="sd">    :type it: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+<span class="n">l</span> <span class="o">=</span> <span class="n">empty_list</span> <span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)):</span>
+    <span class="n">cons</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+<span class="n">it</span><span class="o">=</span><span class="n">get_listiterator</span> <span class="p">(</span><span class="n">l</span><span class="p">)</span>
+<span class="n">c</span><span class="o">=</span><span class="n">__new_cell</span> <span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo_FIL.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Module tp-iterateurs 0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, SAOUDI - KESRAOUI, Univ. Lille.
+      Last updated on 09/03/2020.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>

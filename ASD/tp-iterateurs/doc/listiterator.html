@@ -1,0 +1,351 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>listiterator module &#8212; Module tp-iterateurs 0 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="tp-iterateurs" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="tp-iterateurs"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Module tp-iterateurs 0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-listiterator">
+<span id="listiterator-module"></span><h1><a class="reference internal" href="#module-listiterator" title="listiterator"><code class="xref py py-mod docutils literal"><span class="pre">listiterator</span></code></a> module<a class="headerlink" href="#module-listiterator" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="#module-listiterator" title="listiterator"><code class="xref py py-mod docutils literal"><span class="pre">listiterator</span></code></a> module : list implementation with iterator interaction</p>
+<p>Provides constructor, selectors and modifiers for mutable lists.
+Lists of this module must be traversed via iterators.</p>
+<p>An iterator for lists allows the programmer to traverse the list in
+either direction and adding elements to the list during iteration.</p>
+<p>An iterator has no current element; its cursor position always lies
+between the element that would be returned by a call to <code class="code docutils literal"><span class="pre">previous</span></code> and
+the element that would be returned by a call to <cite>next</cite>.</p>
+<p>An iterator for a list of length n has n+1 possible cursor positions,
+as illustrated by the carets (^) below:</p>
+<div class="code highlight-default"><div class="highlight"><pre><span></span>                     <span class="n">Element</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>   <span class="n">Element</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   <span class="n">Element</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>   <span class="o">...</span> <span class="n">Element</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="n">positions</span><span class="p">:</span>  <span class="o">^</span>            <span class="o">^</span>            <span class="o">^</span>            <span class="o">^</span>                  <span class="o">^</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body"><a class="reference external" href="http://portail.fil.univ-lille1.fr">FIL - IEEA - Univ. Lille1.fr</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">date:</th><td class="field-body">2016, january</td>
+</tr>
+</tbody>
+</table>
+<dl class="exception">
+<dt id="listiterator.EmptyList">
+<em class="property">exception </em><code class="descclassname">listiterator.</code><code class="descname">EmptyList</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#EmptyList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.EmptyList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception for empty lists</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="listiterator.NoSuchElementException">
+<em class="property">exception </em><code class="descclassname">listiterator.</code><code class="descname">NoSuchElementException</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#NoSuchElementException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.NoSuchElementException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception for iterators not positionned</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.add">
+<code class="descclassname">listiterator.</code><code class="descname">add</code><span class="sig-paren">(</span><em>it</em>, <em>v</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts the specified element into the list. The element is
+inserted immediately before the element that would be returned by
+next(), if any, and after the element that would be returned by
+previous(), if any. (If the list contains no elements, the new
+element becomes the sole element on the list.) The new element is
+inserted before the implicit cursor: a subsequent call to next
+would be unaffected, and a subsequent call to previous would
+return the new element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>it</strong> (<em>dict</em>) – The iterator</li>
+<li><strong>v</strong> (<em>Any</em>) – The element</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.cons">
+<code class="descclassname">listiterator.</code><code class="descname">cons</code><span class="sig-paren">(</span><em>l</em>, <em>v</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#cons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.cons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the value <code class="code docutils literal"><span class="pre">v</span></code> at the begining of the list <code class="code docutils literal"><span class="pre">l</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>l</strong> (<em>dict</em>) – The list, possibly empty.</li>
+<li><strong>v</strong> (<em>Any</em>) – The value to be added.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>UC: not compatible with iterators</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.empty_list">
+<code class="descclassname">listiterator.</code><code class="descname">empty_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#empty_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.empty_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new empty list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A frest list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.get_listiterator">
+<code class="descclassname">listiterator.</code><code class="descname">get_listiterator</code><span class="sig-paren">(</span><em>l</em>, <em>default=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#get_listiterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.get_listiterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new iterator for list <em>l</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>l</strong> (<em>dict</em>) – The list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An iterator at the begining of the list</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.hasNext">
+<code class="descclassname">listiterator.</code><code class="descname">hasNext</code><span class="sig-paren">(</span><em>it</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#hasNext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.hasNext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="code docutils literal"><span class="pre">True</span></code> if this list iterator has more elements when
+traversing the list in the forward direction. (In other words,
+returns <code class="code docutils literal"><span class="pre">True</span></code> if <code class="code docutils literal"><span class="pre">next(it)</span></code> would return an element rather than
+throwing an exception.)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>it</strong> (<em>dict</em>) – The iterator</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.hasPrevious">
+<code class="descclassname">listiterator.</code><code class="descname">hasPrevious</code><span class="sig-paren">(</span><em>it</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#hasPrevious"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.hasPrevious" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="code docutils literal"><span class="pre">True</span></code> if this list iterator has more elements when
+traversing the list in the reverse direction. (In other words,
+returns <code class="code docutils literal"><span class="pre">True</span></code> if <code class="code docutils literal"><span class="pre">previous(it)</span></code> would return an
+element rather than throwing an exception.)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>it</strong> (<em>dict</em>) – The iterator</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.is_empty">
+<code class="descclassname">listiterator.</code><code class="descname">is_empty</code><span class="sig-paren">(</span><em>l</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#is_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if the list is empty, false else.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>l</strong> (<em>dict</em>) – The list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.next">
+<code class="descclassname">listiterator.</code><code class="descname">next</code><span class="sig-paren">(</span><em>it</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the next element in the list and advances the cursor
+position. This method may be called repeatedly to iterate through
+the list, or intermixed with calls to <code class="code docutils literal"><span class="pre">previous(it)</span></code> to go back and
+forth. (Note that alternating calls to next and previous will
+return the same element repeatedly.)</p>
+<p>Throws NoSuchElementException if theere is no such element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>it</strong> (<em>dict</em>) – The iterator</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Type of the elements of the list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.previous">
+<code class="descclassname">listiterator.</code><code class="descname">previous</code><span class="sig-paren">(</span><em>it</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#previous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.previous" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the previous element in the list and moves the cursor
+position backwards. This method may be called repeatedly to
+iterate through the list backwards, or intermixed with calls to
+<code class="code docutils literal"><span class="pre">next(it)</span></code> to go back and forth. (Note that alternating calls to next
+and previous will return the same element repeatedly.)</p>
+<p>Throws NoSuchElementException if there is no such element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>it</strong> (<em>dict</em>) – The iterator</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Type of the elements of the list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.print_list">
+<code class="descclassname">listiterator.</code><code class="descname">print_list</code><span class="sig-paren">(</span><em>l</em>, <em>reverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#print_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.print_list" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>l</strong> (<em>dict</em>) – The list, possibly empty.</li>
+<li><strong>reverse</strong> (<em>boolean</em>) – True if the the list <em>l</em> must be printed from the end to the begining</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="listiterator.remove">
+<code class="descclassname">listiterator.</code><code class="descname">remove</code><span class="sig-paren">(</span><em>it</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/listiterator.html#remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#listiterator.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes from the list the last element that was returned by
+next(). This call can only be made once per call to next.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>it</strong> (<em>dict</em>) – The iterator</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo_FIL.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">tp-iterateurs</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/listiterator.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="tp-iterateurs"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Module tp-iterateurs 0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, SAOUDI - KESRAOUI, Univ. Lille.
+      Last updated on 09/03/2020.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>
